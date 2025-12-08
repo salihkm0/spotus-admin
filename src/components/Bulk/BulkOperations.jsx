@@ -68,7 +68,7 @@ const BulkOperations = ({ selectedDevices, onComplete }) => {
         case 'reboot':
           await deviceService.sendBulkCommand({
             device_ids: selectedDevices,
-            command: 'reboot'
+            command: 'sudo reboot'
           })
           toast.success(`Reboot command sent to ${selectedDevices.length} devices`)
           break

@@ -61,31 +61,29 @@ export const videoService = {
     const response = await api.get(`/brands/${id}`)
     return response.data
   },
-
-  createBrand: async (brandData) => {
-    const formData = new FormData()
-    Object.keys(brandData).forEach(key => {
-      if (brandData[key] !== null && brandData[key] !== undefined) {
-        formData.append(key, brandData[key])
+  
+  createBrand: async (formData) => {
+    // Make sure required fields are present
+    const requiredFields = ['name', 'phone', 'address']
+    for (const field of requiredFields) {
+      if (!formData.get(field)) {
+        throw new Error(`${field} is required`)
       }
-    })
+    }
     
     const response = await api.post('/brands', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
+      headers: { 
+        'Content-Type': 'multipart/form-data',
+      }
     })
     return response.data
   },
 
-  updateBrand: async (id, brandData) => {
-    const formData = new FormData()
-    Object.keys(brandData).forEach(key => {
-      if (brandData[key] !== null && brandData[key] !== undefined) {
-        formData.append(key, brandData[key])
-      }
-    })
-    
+  updateBrand: async (id, formData) => {
     const response = await api.put(`/brands/${id}`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
+      headers: { 
+        'Content-Type': 'multipart/form-data',
+      }
     })
     return response.data
   },
