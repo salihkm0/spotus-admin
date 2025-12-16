@@ -12,6 +12,12 @@ export const deviceService = {
     return response.data
   },
 
+  // NEW: Get detailed device information
+  getDeviceDetails: async (deviceId) => {
+    const response = await api.get(`/devices/${deviceId}/details`)
+    return response.data
+  },
+
   createDevice: async (deviceData) => {
     const response = await api.post('/rpi', deviceData)
     return response.data

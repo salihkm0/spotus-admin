@@ -39,8 +39,51 @@ export const authService = {
     return response.data
   },
 
-  checkToken: async () => {
-    const response = await api.get('/check-token')
+  // NEW: Forgot Password
+  forgotPassword: async (email) => {
+    const response = await api.post('/auth/forgot-password', { email })
+    return response.data
+  },
+
+  // NEW: Reset Password
+  resetPassword: async (token, passwordData) => {
+    const response = await api.post(`/auth/reset-password/${token}`, passwordData)
+    return response.data
+  },
+
+  // NEW: Change Password
+  changePassword: async (passwordData) => {
+    const response = await api.put('/auth/change-password', passwordData)
+    return response.data
+  },
+
+  // NEW: Deactivate Account
+  deactivateAccount: async () => {
+    const response = await api.put('/auth/deactivate')
+    return response.data
+  },
+
+  // NEW: Get All Users (Admin only)
+  getAllUsers: async (params = {}) => {
+    const response = await api.get('/auth/users', { params })
+    return response.data
+  },
+
+  // NEW: Get User Stats (Admin only)
+  getUserStats: async () => {
+    const response = await api.get('/auth/stats')
+    return response.data
+  },
+
+  // NEW: Activate User (Admin only)
+  activateUser: async (userId) => {
+    const response = await api.put(`/auth/activate/${userId}`)
+    return response.data
+  },
+
+  // NEW: Delete User (Admin only)
+  deleteUser: async (userId) => {
+    const response = await api.delete(`/auth/delete/${userId}`)
     return response.data
   }
 }
