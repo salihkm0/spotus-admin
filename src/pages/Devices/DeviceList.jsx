@@ -10,6 +10,8 @@ import {
   Activity,
   Monitor,
   Eye,
+  User,
+  Car,
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -82,6 +84,8 @@ const DeviceList = () => {
       setShowModal(false);
       setEditingDevice(null);
       toast.success("Device updated successfully");
+      // Refresh the devices list after successful update
+      fetchDevices();
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to update device");
       console.error("Error updating device:", error);
@@ -260,6 +264,18 @@ const DeviceList = () => {
           bValue = statusOrder[bValue] || 5;
         }
 
+        // Handle owner name sorting
+        if (sortBy === "owner_name") {
+          aValue = a.owner_name || "";
+          bValue = b.owner_name || "";
+        }
+
+        // Handle vehicle number sorting
+        if (sortBy === "vehicle_no") {
+          aValue = a.vehicle_no || "";
+          bValue = b.vehicle_no || "";
+        }
+
         if (sortDirection === "asc") {
           return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
         } else {
@@ -308,8 +324,8 @@ const DeviceList = () => {
       cellClassName: "w-12 px-4",
     },
     {
-      key: "rpi_name",
-      header: "Device",
+      key: "owner_name",
+      header: "Owner & Vehicle",
       sortable: true,
       render: (device) => (
         <Link
@@ -317,16 +333,23 @@ const DeviceList = () => {
           className="flex items-center space-x-3 hover:text-primary-600 transition-colors"
         >
           <div className="flex-shrink-0">
-            <Monitor className="h-6 w-6 text-gray-400" />
+            <div className="bg-gray-100 p-2 rounded-lg">
+              <User className="h-5 w-5 text-gray-600" />
+            </div>
           </div>
-          <div>
-            <div className="font-medium text-gray-900">{device.rpi_name}</div>
-            <div className="text-sm text-gray-500">{device.rpi_id}</div>
+          <div className="min-w-0 flex-1">
+            <div className="font-medium text-gray-900 truncate">
+              {device.owner_name || "Not specified"}
+            </div>
             {device.vehicle_no && (
-              <div className="text-xs text-gray-400 mt-1">
-                Vehicle: {device.vehicle_no}
+              <div className="text-sm text-gray-600 flex items-center mt-1">
+                <Car className="h-3 w-3 mr-1 flex-shrink-0" />
+                <span className="truncate">{device.vehicle_no}</span>
               </div>
             )}
+            <div className="text-xs text-gray-400 mt-1 truncate">
+              Device: {device.rpi_name || device.rpi_id}
+            </div>
           </div>
         </Link>
       ),
@@ -340,9 +363,9 @@ const DeviceList = () => {
           <div className="text-sm text-gray-900">
             {device.location || "Not specified"}
           </div>
-          {device.owner_name && (
+          {device.owner_phone && (
             <div className="text-xs text-gray-500 mt-1">
-              {device.owner_name}
+              📱 {device.owner_phone}
             </div>
           )}
         </div>
@@ -356,9 +379,9 @@ const DeviceList = () => {
         const config = getStatusConfig(device.rpi_status);
 
         return (
-          <div className="flex items-center space-x-2">
+          <div className="flex flex-col space-y-1">
             <span
-              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.bgColor} ${config.textColor}`}
+              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.bgColor} ${config.textColor} self-start`}
             >
               <div
                 className={`w-2 h-2 rounded-full bg-${config.color}-500 mr-1`}
@@ -432,7 +455,7 @@ const DeviceList = () => {
       render: (device) => (
         <div className="flex items-center space-x-2">
           <Link
-            to={`/devices/${device.rpi_id}`}
+            to={`/devices/${device._id}`}
             className="text-primary-600 hover:text-primary-900 transition-colors p-1 rounded"
             title="View Details"
           >
@@ -642,7 +665,7 @@ const DeviceList = () => {
         sortDirection={sortDirection}
         emptyMessage={
           <div className="text-center py-12">
-            <Monitor className="mx-auto h-12 w-12 text-gray-400" />
+            <User className="mx-auto h-12 w-12 text-gray-400" />
             <h3 className="mt-2 text-sm font-medium text-gray-900">
               No devices
             </h3>
