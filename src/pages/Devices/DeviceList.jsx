@@ -455,7 +455,7 @@ const DeviceList = () => {
       render: (device) => (
         <div className="flex items-center space-x-2">
           <Link
-            to={`/devices/${device._id}`}
+            to={`/devices/${device.rpi_id}`}
             className="text-primary-600 hover:text-primary-900 transition-colors p-1 rounded"
             title="View Details"
           >
